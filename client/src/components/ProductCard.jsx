@@ -40,7 +40,7 @@ export const ProductCard = ({ product, onSelect }) => {
             {product.categoryName}
           </span>
           <h3
-            onClick={() => onSelect(product)}
+            onClick={() => onSelect(product.id)}
             className="text-base font-bold text-gray-900 mt-1 hover:text-blue-600 transition cursor-pointer line-clamp-2"
           >
             {lang === 'bn' && product.nameBn ? product.nameBn : product.name}

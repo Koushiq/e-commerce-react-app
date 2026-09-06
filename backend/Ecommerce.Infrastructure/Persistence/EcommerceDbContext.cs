@@ -12,12 +12,15 @@ public class EcommerceDbContext : IdentityDbContext<ApplicationUser, Application
     }
 
     public DbSet<Product> Products => Set<Product>();
-    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<ProductVariant> ProductVariants => Set<ProductVariant>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
     public DbSet<PaymentTransaction> PaymentTransactions => Set<PaymentTransaction>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<AppLog> AppLogs => Set<AppLog>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<CartItem> CartItems => Set<CartItem>();
+    public DbSet<WishlistItem> WishlistItems => Set<WishlistItem>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -35,13 +38,22 @@ public class EcommerceDbContext : IdentityDbContext<ApplicationUser, Application
                   .OnDelete(DeleteBehavior.Restrict);
         });
 
-        builder.Entity<Category>(entity =>
+        builder.Entity<ProductVariant>(entity =>
         {
-            entity.HasKey(c => c.Id);
-            entity.Property(c => c.Name).IsRequired().HasMaxLength(100);
-            entity.Property(c => c.Slug).IsRequired().HasMaxLength(120);
-            entity.HasIndex(c => c.Slug).IsUnique();
+            entity.HasKey(v => v.Id);
+            entity.Property(v => v.AdditionalPrice).HasPrecision(18, 2);
+            entity.HasOne(v => v.Product)
+                .WithMany(p => p.Variants)
+                .HasForeignKey(v => v.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
+        builder.Entity<Category>(entity =>
+{
+    entity.HasKey(c => c.Id);
+    entity.Property(c => c.Name).IsRequired().HasMaxLength(100);
+    entity.Property(c => c.Slug).IsRequired().HasMaxLength(120);
+    entity.HasIndex(c => c.Slug).IsUnique();
+});
 
         builder.Entity<Order>(entity =>
         {
