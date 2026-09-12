@@ -2,6 +2,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
+// New wishlist state
+const WishlistContext = createContext();
+
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => {
     try {
@@ -13,6 +16,34 @@ export const CartProvider = ({ children }) => {
   });
 
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const [wishlistItems, setWishlistItems] = useState(() => {
+    try {
+      const localData = localStorage.getItem('wishlist_items');
+      return localData ? JSON.parse(localData) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('wishlist_items', JSON.stringify(wishlistItems));
+  }, [wishlistItems]);
+
+  const addToWishlist = async (productId) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:5000'}/api/Wishlist/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, variantId: null })
+      });
+      if (!res.ok) throw new Error('Failed to add to wishlist');
+      // Optimistically update UI
+      setWishlistItems(prev => [...prev, { productId }]);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem('cart_items', JSON.stringify(cartItems));
@@ -60,6 +91,7 @@ export const CartProvider = ({ children }) => {
     <CartContext.Provider value={{
       cartItems,
       addToCart,
+      addToWishlist,
       removeFromCart,
       updateQuantity,
       clearCart,

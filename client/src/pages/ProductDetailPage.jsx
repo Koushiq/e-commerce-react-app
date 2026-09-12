@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useCart } from '../context/CartContext';
+import { useState, useEffect } from 'react';
 
-// ProductDetailPage receives the selected product ID from App.jsx and a callback to go back.
 export default function ProductDetailPage({ productId, onBack }) {
+  const { addToCart, addToWishlist } = useCart();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -54,6 +55,21 @@ export default function ProductDetailPage({ productId, onBack }) {
           <div className="text-xl font-semibold mb-4">
             ৳ {product.price?.toLocaleString()}
           </div>
+          {/* Action buttons */}
+          <div className="flex gap-4 mb-4">
+            <button
+              onClick={() => addToCart(product)}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Add to Cart
+            </button>
+            <button
+              onClick={() => addToWishlist(product.id)}
+              className="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
+            >
+              Add to Wishlist
+            </button>
+          </div>
           {/* Variants placeholder – will render if API supplies a "variants" array */}
           {Array.isArray(product.variants) && product.variants.length > 0 && (
             <div className="mt-4">
@@ -75,3 +91,5 @@ export default function ProductDetailPage({ productId, onBack }) {
     </div>
   );
 }
+
+
