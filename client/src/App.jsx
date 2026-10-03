@@ -8,6 +8,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { OrdersPage } from './pages/OrdersPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import { ToastNotification } from './components/ToastNotification';
 import { useLanguage } from './context/LanguageContext';
 
 export function App() {
@@ -22,9 +23,11 @@ export function App() {
     setCurrentView('success');
   };
 
-  const handleSelectProduct = (productId) => {
-    setSelectedProductId(productId);
+  const handleSelectProduct = (productOrId) => {
+    const id = typeof productOrId === 'object' && productOrId !== null ? productOrId.id : productOrId;
+    setSelectedProductId(id);
     setCurrentView('productDetail');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -39,6 +42,9 @@ export function App() {
 
       {/* Cart Drawer */}
       <CartDrawer onCheckout={() => setCurrentView('checkout')} />
+
+      {/* Global Toast Notification */}
+      <ToastNotification />
 
       {/* Main Views */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-16">

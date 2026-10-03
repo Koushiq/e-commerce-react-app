@@ -1,12 +1,12 @@
 import React from 'react';
-import { ShoppingBag, User, LogOut, Globe, Shield, Search } from 'lucide-react';
+import { ShoppingBag, User, LogOut, Globe, Shield, Search, Heart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 
 export const Navbar = ({ currentView, setCurrentView, searchTerm, setSearchTerm }) => {
   const { user, isAdmin, logout } = useAuth();
-  const { totalCount, setIsCartOpen } = useCart();
+  const { totalCount, wishlistCount, setIsCartOpen } = useCart();
   const { lang, switchLanguage, t } = useLanguage();
 
   return (
@@ -100,6 +100,20 @@ export const Navbar = ({ currentView, setCurrentView, searchTerm, setSearchTerm 
                 <span>{t.login}</span>
               </button>
             )}
+
+            {/* Wishlist Button */}
+            <div
+              title={`${wishlistCount} ${t.wishlist}`}
+              className="relative p-2.5 rounded-xl border border-gray-200 text-gray-700 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50/50 transition shadow-sm flex items-center space-x-1.5"
+            >
+              <Heart className={`w-5 h-5 transition-all duration-300 ${wishlistCount > 0 ? 'fill-rose-500 text-rose-500 scale-105' : 'text-gray-500'}`} />
+              <span className="hidden sm:inline text-xs font-bold tracking-wide uppercase">{t.wishlist}</span>
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-pulse">
+                  {wishlistCount}
+                </span>
+              )}
+            </div>
 
             {/* Cart Button */}
             <button
