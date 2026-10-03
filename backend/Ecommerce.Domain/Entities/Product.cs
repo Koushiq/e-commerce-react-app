@@ -20,4 +20,7 @@ public class Product : AuditableEntity
 
     public Guid CategoryId { get; set; }
     public Category Category { get; set; } = null!;
+
+    // Navigation collection for variants
+    public ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
 }

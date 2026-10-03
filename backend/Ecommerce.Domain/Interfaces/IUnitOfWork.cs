@@ -13,6 +13,7 @@ public interface IUnitOfWork : IDisposable
     IRepository<PaymentTransaction> PaymentTransactions { get; }
     IRepository<RefreshToken> RefreshTokens { get; }
     IRepository<AppLog> Logs { get; }
+    IRepository<WishlistItem> WishlistItems { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

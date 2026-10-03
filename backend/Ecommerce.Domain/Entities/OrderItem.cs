@@ -15,4 +15,7 @@ public class OrderItem : BaseEntity
     public decimal UnitPrice { get; set; }
     public int Quantity { get; set; }
     public decimal TotalPrice => UnitPrice * Quantity;
+    // Variant information (optional)
+    public Guid? VariantId { get; set; }
+    public ProductVariant? Variant { get; set; }
 }

@@ -7,18 +7,27 @@ import { OrderSuccessPage } from './pages/OrderSuccessPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { OrdersPage } from './pages/OrdersPage';
-import { useCart } from './context/CartContext';
+import ProductDetailPage from './pages/ProductDetailPage';
+import { ToastNotification } from './components/ToastNotification';
 import { useLanguage } from './context/LanguageContext';
 
 export function App() {
-  const [currentView, setCurrentView] = useState('home'); // 'home', 'checkout', 'success', 'login', 'register', 'orders'
+  const [currentView, setCurrentView] = useState('home'); // possible views: home, checkout, success, login, register, orders, productDetail
   const [searchTerm, setSearchTerm] = useState('');
   const [recentOrder, setRecentOrder] = useState(null);
+  const [selectedProductId, setSelectedProductId] = useState(null);
   const { t } = useLanguage();
 
   const handleOrderPlaced = (order) => {
     setRecentOrder(order);
     setCurrentView('success');
+  };
+
+  const handleSelectProduct = (productOrId) => {
+    const id = typeof productOrId === 'object' && productOrId !== null ? productOrId.id : productOrId;
+    setSelectedProductId(id);
+    setCurrentView('productDetail');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -32,48 +41,31 @@ export function App() {
       />
 
       {/* Cart Drawer */}
-      <CartDrawer
-        onCheckout={() => setCurrentView('checkout')}
-      />
+      <CartDrawer onCheckout={() => setCurrentView('checkout')} />
+
+      {/* Global Toast Notification */}
+      <ToastNotification />
 
       {/* Main Views */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-16">
         {currentView === 'home' && (
-          <HomePage
-            searchTerm={searchTerm}
-            onSelectProduct={() => {}}
-          />
+          <HomePage searchTerm={searchTerm} onSelectProduct={handleSelectProduct} />
         )}
-
         {currentView === 'checkout' && (
-          <CheckoutPage
-            onOrderPlaced={handleOrderPlaced}
-          />
+          <CheckoutPage onOrderPlaced={handleOrderPlaced} />
         )}
-
         {currentView === 'success' && (
-          <OrderSuccessPage
-            order={recentOrder}
-            onContinueShopping={() => setCurrentView('home')}
-          />
+          <OrderSuccessPage order={recentOrder} onContinueShopping={() => setCurrentView('home')} />
         )}
-
         {currentView === 'login' && (
-          <LoginPage
-            onSwitchToRegister={() => setCurrentView('register')}
-            onLoginSuccess={() => setCurrentView('home')}
-          />
+          <LoginPage onSwitchToRegister={() => setCurrentView('register')} onLoginSuccess={() => setCurrentView('home')} />
         )}
-
         {currentView === 'register' && (
-          <RegisterPage
-            onSwitchToLogin={() => setCurrentView('login')}
-            onRegisterSuccess={() => setCurrentView('home')}
-          />
+          <RegisterPage onSwitchToLogin={() => setCurrentView('login')} onRegisterSuccess={() => setCurrentView('home')} />
         )}
-
-        {currentView === 'orders' && (
-          <OrdersPage />
+        {currentView === 'orders' && <OrdersPage />}
+        {currentView === 'productDetail' && selectedProductId && (
+          <ProductDetailPage productId={selectedProductId} onBack={() => setCurrentView('home')} />
         )}
       </main>
 
@@ -94,4 +86,5 @@ export function App() {
     </div>
   );
 }
+
 export default App;

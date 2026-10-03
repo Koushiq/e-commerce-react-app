@@ -17,6 +17,7 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<PaymentTransaction> PaymentTransactions { get; }
     public IRepository<RefreshToken> RefreshTokens { get; }
     public IRepository<AppLog> Logs { get; }
+    public IRepository<WishlistItem> WishlistItems { get; }
 
     public UnitOfWork(EcommerceDbContext context)
     {
@@ -27,6 +28,7 @@ public class UnitOfWork : IUnitOfWork
         PaymentTransactions = new GenericRepository<PaymentTransaction>(context);
         RefreshTokens = new GenericRepository<RefreshToken>(context);
         Logs = new GenericRepository<AppLog>(context);
+        WishlistItems = new GenericRepository<WishlistItem>(context);
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
