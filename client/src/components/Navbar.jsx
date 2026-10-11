@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBag, User, LogOut, Globe, Shield, Search, Heart } from 'lucide-react';
+import { ShoppingBag, User, LogOut, Globe, Shield, Search, Heart, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -73,6 +73,22 @@ export const Navbar = ({ currentView, setCurrentView, searchTerm, setSearchTerm 
 
           {/* Action Icons */}
           <div className="flex items-center space-x-3 sm:space-x-4">
+            {/* Admin Menu Link */}
+            {isAdmin && (
+              <button
+                onClick={() => setCurrentView('admin')}
+                title={t.admin}
+                className={`hidden sm:flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-bold transition shadow-sm ${
+                  currentView === 'admin'
+                    ? 'bg-slate-900 text-white shadow-md'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-900 hover:text-white'
+                }`}
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span>{t.admin}</span>
+              </button>
+            )}
+
             {/* User Dropdown / Auth Buttons */}
             {user ? (
               <div className="flex items-center space-x-3">

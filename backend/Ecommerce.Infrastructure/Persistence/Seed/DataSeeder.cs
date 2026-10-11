@@ -14,6 +14,22 @@ public static class DataSeeder
     {
         await context.Database.EnsureCreatedAsync();
 
+        // EnsureCreatedAsync only builds schema for brand-new databases.
+        // Apply idempotent DDL so existing databases converge when new entities are added.
+        await context.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""WishlistItems"" (
+                ""Id"" TEXT NOT NULL CONSTRAINT ""PK_WishlistItems"" PRIMARY KEY,
+                ""UserId"" TEXT NOT NULL,
+                ""ProductId"" TEXT NOT NULL,
+                ""VariantId"" TEXT NULL,
+                CONSTRAINT ""FK_WishlistItems_AspNetUsers_UserId"" FOREIGN KEY (""UserId"") REFERENCES ""AspNetUsers"" (""Id"") ON DELETE CASCADE,
+                CONSTRAINT ""FK_WishlistItems_Products_ProductId"" FOREIGN KEY (""ProductId"") REFERENCES ""Products"" (""Id"") ON DELETE CASCADE,
+                CONSTRAINT ""FK_WishlistItems_ProductVariants_VariantId"" FOREIGN KEY (""VariantId"") REFERENCES ""ProductVariants"" (""Id"") ON DELETE SET NULL
+            );
+            CREATE INDEX IF NOT EXISTS ""IX_WishlistItems_UserId"" ON ""WishlistItems"" (""UserId"");
+            CREATE INDEX IF NOT EXISTS ""IX_WishlistItems_ProductId"" ON ""WishlistItems"" (""ProductId"");
+        ");
+
         // 1. Seed Roles
         string[] roles = { "Admin", "Customer", "Manager" };
         foreach (var roleName in roles)
