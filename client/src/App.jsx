@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { CartDrawer } from './components/CartDrawer';
 import { HomePage } from './pages/HomePage';
@@ -8,15 +8,24 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { OrdersPage } from './pages/OrdersPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { ToastNotification } from './components/ToastNotification';
 import { useLanguage } from './context/LanguageContext';
+import { useAuth } from './context/AuthContext';
 
 export function App() {
-  const [currentView, setCurrentView] = useState('home'); // possible views: home, checkout, success, login, register, orders, productDetail
+  const [currentView, setCurrentView] = useState('home'); // possible views: home, checkout, success, login, register, orders, productDetail, admin
   const [searchTerm, setSearchTerm] = useState('');
   const [recentOrder, setRecentOrder] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const { t } = useLanguage();
+  const { isAdmin } = useAuth();
+
+  useEffect(() => {
+    if (currentView === 'admin' && !isAdmin) {
+      setCurrentView('home');
+    }
+  }, [currentView, isAdmin]);
 
   const handleOrderPlaced = (order) => {
     setRecentOrder(order);
@@ -47,27 +56,31 @@ export function App() {
       <ToastNotification />
 
       {/* Main Views */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-16">
-        {currentView === 'home' && (
-          <HomePage searchTerm={searchTerm} onSelectProduct={handleSelectProduct} />
-        )}
-        {currentView === 'checkout' && (
-          <CheckoutPage onOrderPlaced={handleOrderPlaced} />
-        )}
-        {currentView === 'success' && (
-          <OrderSuccessPage order={recentOrder} onContinueShopping={() => setCurrentView('home')} />
-        )}
-        {currentView === 'login' && (
-          <LoginPage onSwitchToRegister={() => setCurrentView('register')} onLoginSuccess={() => setCurrentView('home')} />
-        )}
-        {currentView === 'register' && (
-          <RegisterPage onSwitchToLogin={() => setCurrentView('login')} onRegisterSuccess={() => setCurrentView('home')} />
-        )}
-        {currentView === 'orders' && <OrdersPage />}
-        {currentView === 'productDetail' && selectedProductId && (
-          <ProductDetailPage productId={selectedProductId} onBack={() => setCurrentView('home')} />
-        )}
-      </main>
+      {currentView === 'admin' && isAdmin ? (
+        <AdminDashboard onBackToStore={() => setCurrentView('home')} />
+      ) : (
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-16">
+          {currentView === 'home' && (
+            <HomePage searchTerm={searchTerm} onSelectProduct={handleSelectProduct} />
+          )}
+          {currentView === 'checkout' && (
+            <CheckoutPage onOrderPlaced={handleOrderPlaced} />
+          )}
+          {currentView === 'success' && (
+            <OrderSuccessPage order={recentOrder} onContinueShopping={() => setCurrentView('home')} />
+          )}
+          {currentView === 'login' && (
+            <LoginPage onSwitchToRegister={() => setCurrentView('register')} onLoginSuccess={() => setCurrentView('home')} />
+          )}
+          {currentView === 'register' && (
+            <RegisterPage onSwitchToLogin={() => setCurrentView('login')} onRegisterSuccess={() => setCurrentView('home')} />
+          )}
+          {currentView === 'orders' && <OrdersPage />}
+          {currentView === 'productDetail' && selectedProductId && (
+            <ProductDetailPage productId={selectedProductId} onBack={() => setCurrentView('home')} />
+          )}
+        </main>
+      )}
 
       {/* Modern Footer */}
       <footer className="bg-white border-t border-gray-200 py-10 mt-auto">
