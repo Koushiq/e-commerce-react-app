@@ -1,0 +1,17 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "nexstore": {
+        "type": "local",
+        "command": ["dotnet", "run", "--project", "/Users/mushfiqs_mac/Documents/reactapp/backend/Ecommerce.McpServer/Ecommerce.McpServer.csproj"],
+        "timeout": {
+          "startup": 45000
+        },
+        "environment": {
+          "MCP_CONNECTION_STRING": "Data Source=/Users/mushfiqs_mac/Documents/reactapp/backend/Ecommerce.Api/ecommerce.db"
+        }
+      }
+    }
+  }
+}

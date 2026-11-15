@@ -71,6 +71,7 @@ echo -e "\n${BLUE}[4/4] Starting services concurrently...${NC}"
 # PIDs of background processes
 BACKEND_PID=""
 CLIENT_PID=""
+MCP_PID=""
 
 # Clean termination handler
 cleanup() {
@@ -85,6 +86,11 @@ cleanup() {
     if [ -n "$CLIENT_PID" ]; then
         echo -e "Stopping Client (PID: $CLIENT_PID)..."
         kill "$CLIENT_PID" 2>/dev/null
+    fi
+
+    if [ -n "$MCP_PID" ]; then
+        echo -e "Stopping MCP Server (PID: $MCP_PID)..."
+        kill "$MCP_PID" 2>/dev/null
     fi
     
     echo -e "${GREEN}All services stopped successfully.${NC}"
@@ -108,11 +114,17 @@ echo -e "${BLUE}Starting Client...${NC}"
 npm run dev --prefix client &
 CLIENT_PID=$!
 
+# Start MCP Server (stdio transport, for external MCP clients)
+echo -e "${BLUE}Starting MCP Server (stdio)...${NC}"
+dotnet run --project backend/Ecommerce.McpServer/Ecommerce.McpServer.csproj &
+MCP_PID=$!
+
 echo -e "\n${GREEN}==================================================${NC}"
 echo -e "${GREEN}Application is running successfully!${NC}"
 echo -e " - ${BLUE}Client URL:${NC}  http://localhost:3000"
 echo -e " - ${BLUE}Backend URL:${NC} http://localhost:5000"
-echo -e "Press ${RED}Ctrl+C${NC} to stop both services."
+echo -e " - ${BLUE}MCP Server:${NC}  stdio (for external MCP clients)"
+echo -e "Press ${RED}Ctrl+C${NC} to stop all services."
 echo -e "${GREEN}==================================================${NC}\n"
 
 # Keep script running to monitor logs and intercept Ctrl+C

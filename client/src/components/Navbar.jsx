@@ -1,10 +1,10 @@
 import React from 'react';
-import { ShoppingBag, User, LogOut, Globe, Shield, Search, Heart, LayoutDashboard } from 'lucide-react';
+import { ShoppingBag, User, LogOut, Globe, Shield, Search, Heart, LayoutDashboard, MessageSquare } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 
-export const Navbar = ({ currentView, setCurrentView, searchTerm, setSearchTerm }) => {
+export const Navbar = ({ currentView, setCurrentView, searchTerm, setSearchTerm, onOpenChat }) => {
   const { user, isAdmin, logout } = useAuth();
   const { totalCount, wishlistCount, setIsCartOpen } = useCart();
   const { lang, switchLanguage, t } = useLanguage();
@@ -86,6 +86,17 @@ export const Navbar = ({ currentView, setCurrentView, searchTerm, setSearchTerm 
               >
                 <LayoutDashboard className="w-4 h-4" />
                 <span>{t.admin}</span>
+              </button>
+            )}
+
+            {/* Floating Chat Button (Admin Only) */}
+            {isAdmin && (
+              <button
+                onClick={onOpenChat}
+                title={t.chatTitle || 'Admin Assistant'}
+                className="fixed bottom-6 right-6 z-50 bg-indigo-600 text-white p-4 rounded-2xl shadow-2xl hover:bg-indigo-700 hover:scale-105 transition-all duration-200 flex items-center justify-center"
+              >
+                <MessageSquare className="w-6 h-6" />
               </button>
             )}
 
