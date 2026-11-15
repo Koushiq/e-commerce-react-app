@@ -9,6 +9,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import { OrdersPage } from './pages/OrdersPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
+import AdminChat from './components/admin/AdminChat';
 import { ToastNotification } from './components/ToastNotification';
 import { useLanguage } from './context/LanguageContext';
 import { useAuth } from './context/AuthContext';
@@ -18,6 +19,7 @@ export function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [recentOrder, setRecentOrder] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const { t } = useLanguage();
   const { isAdmin } = useAuth();
 
@@ -47,6 +49,7 @@ export function App() {
         setCurrentView={setCurrentView}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
+        onOpenChat={() => setIsChatOpen(true)}
       />
 
       {/* Cart Drawer */}
@@ -80,6 +83,11 @@ export function App() {
             <ProductDetailPage productId={selectedProductId} onBack={() => setCurrentView('home')} />
           )}
         </main>
+      )}
+
+      {/* Global Admin Chat Widget */}
+      {isAdmin && (
+        <AdminChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       )}
 
       {/* Modern Footer */}

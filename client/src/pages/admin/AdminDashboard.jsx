@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
+import AdminChat from '../../components/admin/AdminChat';
 import {
   LayoutDashboard,
   Users,
@@ -14,7 +15,8 @@ import {
   AlertCircle,
   Loader2,
   ArrowLeft,
-  ShieldCheck
+  ShieldCheck,
+  MessageSquare
 } from 'lucide-react';
 
 const STATUS_STYLES = {
@@ -43,6 +45,7 @@ export const AdminDashboard = ({ onBackToStore }) => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   useEffect(() => {
     fetchStats();
@@ -160,14 +163,23 @@ export const AdminDashboard = ({ onBackToStore }) => {
                 <h1 className="text-2xl font-black text-gray-900">{t.dashboard}</h1>
                 <p className="text-sm text-gray-500 mt-0.5">{t.overview}</p>
               </div>
-              {stats && (
+              <div className="flex items-center space-x-2">
+                {stats && (
+                  <button
+                    onClick={fetchStats}
+                    className="text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-xl transition"
+                  >
+                    {t.refresh}
+                  </button>
+                )}
                 <button
-                  onClick={fetchStats}
-                  className="text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-xl transition"
+                  onClick={() => setIsChatOpen(true)}
+                  className="flex items-center space-x-2 text-xs font-bold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-xl transition"
                 >
-                  {t.refresh}
+                  <MessageSquare className="w-4 h-4" />
+                  <span>{t.chatTitle || 'Admin Assistant'}</span>
                 </button>
-              )}
+              </div>
             </div>
 
             {loading ? (
@@ -307,6 +319,9 @@ export const AdminDashboard = ({ onBackToStore }) => {
           <PlaceholderSection title={t.manageWishlist} icon={Heart} subtitle={t.comingSoon} />
         )}
       </div>
+
+      {/* Admin Chat Widget */}
+      <AdminChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </div>
   );
 };

@@ -83,6 +83,19 @@ export const translations = {
     fastDelivery: 'Fast Express Delivery',
     authenticGuarantee: 'Authentic Guarantee',
     easyReturns: '7-Day Return Policy',
+    chatTitle: 'Admin Assistant',
+    chatPlaceholder: 'Ask about sales, stock, orders...',
+    chatSend: 'Send',
+    chatThinking: 'Thinking...',
+    chatError: 'Failed to get response. Please try again.',
+    chatRetry: 'Retry',
+    chatEmpty: 'Ask me anything about your store!',
+    toolBadgePrefix: 'Used',
+    suggestSales: 'Sales of a product',
+    suggestStock: 'Stock left',
+    suggestAvgSales: 'Average weekly sales',
+    suggestTopProducts: 'Top products',
+    suggestLowStock: 'Low stock items',
   },
   bn: {
     siteTitle: 'নেক্সস্টোর',
@@ -164,6 +177,19 @@ export const translations = {
     fastDelivery: 'দ্রুত এক্সপ্রেস ডেলিভারি',
     authenticGuarantee: 'শতভাগ খাঁটি পণ্যের নিশ্চয়তা',
     easyReturns: '৭ দিনের সহজ রিটার্ন পলিসি',
+    chatTitle: 'অ্যাডমিন সহায়ক',
+    chatPlaceholder: 'বিক্রয়, স্টক, অর্ডার সম্পর্কে জিজ্ঞাসা করুন...',
+    chatSend: 'পাঠান',
+    chatThinking: 'চিন্তা করছে...',
+    chatError: 'সঠিক উত্তর পাওয়া যায়নি। আবার চেষ্টা করুন।',
+    chatRetry: 'আবার চেষ্টা',
+    chatEmpty: 'আমার স্টোর সম্পর্কে যেকোনো কিছু জিজ্ঞাসা করুন!',
+    toolBadgePrefix: 'ব্যবহৃত',
+    suggestSales: 'পণ্যের বিক্রয়',
+    suggestStock: 'স্টকে আছে',
+    suggestAvgSales: 'গড় সাপ্তাহিক বিক্রয়',
+    suggestTopProducts: 'সেরা পণ্য',
+    suggestLowStock: 'কম স্টকের পণ্য',
   }
 };
 
@@ -175,7 +201,8 @@ export const LanguageProvider = ({ children }) => {
     localStorage.setItem('preferred_lang', newLang);
   };
 
-  const t = translations[lang] || translations.en;
+  const dict = translations[lang] || translations.en;
+  const t = (key) => dict[key];
 
   return (
     <LanguageContext.Provider value={{ lang, switchLanguage, t }}>

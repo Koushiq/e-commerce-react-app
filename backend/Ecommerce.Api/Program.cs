@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
-using System.Text;
 using Ecommerce.Api.Middlewares;
+using Ecommerce.Api.Services;
 using Ecommerce.Application;
 using Ecommerce.Domain.Entities;
 using Ecommerce.Infrastructure;
@@ -10,6 +10,7 @@ using Ecommerce.Infrastructure.Persistence.Seed;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -68,6 +69,13 @@ builder.Services.AddCors(options =>
     });
 });
 
+// MCP Tool Service (in-process tool execution for admin chatbot)
+builder.Services.AddSingleton<McpToolService>();
+
+// LLM Chat Client for admin chatbot
+// TODO: Replace with OpenAI/Azure OpenAI/Ollama client when API key is configured
+builder.Services.AddSingleton<IChatClient, UnconfiguredChatClient>();
+
 var app = builder.Build();
 
 // Connect Serilog DB sink to service provider
@@ -106,3 +114,26 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+file class UnconfiguredChatClient : IChatClient
+{
+    public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var response = new ChatResponse(new[]
+        {
+            new ChatMessage(ChatRole.Assistant,
+                "I'm not fully configured yet. Please set up an LLM API key in appsettings.json under LlmSettings:ApiKey to enable full chatbot functionality.")
+        });
+        return Task.FromResult(response);
+    }
+
+    public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        yield return new ChatResponseUpdate(ChatRole.Assistant,
+            "I'm not fully configured yet. Please set up an LLM API key in appsettings.json under LlmSettings:ApiKey to enable full chatbot functionality.");
+    }
+
+    public object? GetService(Type serviceType, object? serviceKey = null) => null;
+
+    public void Dispose() { }
+}

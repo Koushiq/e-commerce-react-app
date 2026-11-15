@@ -23,7 +23,12 @@ A modern, production-grade eCommerce web application built with **React (Vite + 
 4. **Multi-Language Support (Localization)**:
    - ASP.NET Core Request Localization supporting English (`en-US`) and Bengali (`bn-BD`).
    - React frontend equipped with instant Language Toggle (`EN` / `বাংলা`), localizing catalogs, navigation, and checkout.
-5. **Hybrid Caching (Redis with In-Memory Fallback)**:
+5. **Admin Chatbot with MCP Tools**:
+   - MCP server (`Ecommerce.McpServer`) exposing tools: `search_products`, `get_product_sales`, `get_product_stock`, `get_low_stock_products`, `get_average_sales`, `get_sales_summary`, `get_top_products`, `get_recent_orders`, `get_order_status_lookup`.
+   - Chat relay endpoint: `POST /api/admin/chat` (Admin role only).
+   - Frontend chat widget with suggestion chips, tool-call badges, and EN/BN i18n.
+   - LLM provider configurable via `LlmSettings` in `appsettings.json` (OpenAI-compatible).
+6. **Hybrid Caching (Redis with In-Memory Fallback)**:
    - Pluggable `ICacheService` that dynamically connects to Redis or falls back to in-memory caching when Redis is not running.
    - High-throughput product and category queries cached with automated invalidation.
 6. **Logging (File & Database)**:
